@@ -1,0 +1,16 @@
+<article class="product-card">
+  <a href="{{ product.get_absolute_url }}">
+    <div class="thumb{% if not product.image %} placeholder{% endif %}">
+      {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+      {% else %}
+        No photo
+      {% endif %}
+    </div>
+    <div class="body">
+      <h3>{{ product.name }}</h3>
+      <p class="meta">{{ product.category.name }}</p>
+      <p class="price">${{ product.price }}</p>
+    </div>
+  </a>
+</article>

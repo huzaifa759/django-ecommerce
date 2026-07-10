@@ -1,0 +1,44 @@
+{% extends "core/base.html" %}
+
+{% block title %}Order #{{ order.pk }} — Corner Shop{% endblock %}
+
+{% block content %}
+<h1>Order #{{ order.pk }}</h1>
+<p class="muted">
+  Placed {{ order.created_at|date:"M j, Y H:i" }} · {{ order.get_status_display }}
+</p>
+
+<div class="cart-panel">
+  <table class="cart-table">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Price</th>
+        <th>Qty</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in order.items.all %}
+        <tr>
+          <td>
+            {% if item.product.is_active %}
+              <a href="{{ item.product.get_absolute_url }}">{{ item.product_name }}</a>
+            {% else %}
+              {{ item.product_name }}
+            {% endif %}
+          </td>
+          <td>${{ item.price }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>${{ item.get_total }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p class="cart-total"><strong>Total: ${{ order.get_total }}</strong></p>
+  <p>
+    <a class="btn btn-outline" href="{% url 'orders:list' %}">All orders</a>
+    <a class="btn" href="{% url 'catalog:product_list' %}">Continue shopping</a>
+  </p>
+</div>
+{% endblock %}

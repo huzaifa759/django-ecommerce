@@ -1,0 +1,26 @@
+{% extends "core/base.html" %}
+
+{% block title %}Log in — Corner Shop{% endblock %}
+
+{% block content %}
+<div class="auth-card">
+  <h1>Log in</h1>
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <div class="form-errors">{{ form.non_field_errors }}</div>
+    {% endif %}
+    {% for field in form %}
+      <div class="form-group">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {{ field.errors }}
+      </div>
+    {% endfor %}
+    <button class="btn" type="submit">Log in</button>
+  </form>
+  <p class="muted" style="margin-top: 1rem;">
+    New here? <a href="{% url 'users:register' %}">Create an account</a>
+  </p>
+</div>
+{% endblock %}

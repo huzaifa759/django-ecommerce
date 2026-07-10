@@ -1,0 +1,33 @@
+{% extends "core/base.html" %}
+
+{% block title %}Home — Corner Shop{% endblock %}
+
+{% block content %}
+<section class="intro">
+  <h1>Everyday things, fair prices</h1>
+  <p>Browse a small catalog built while learning Django — no flash, just products you can add to a cart.</p>
+  <p><a class="btn" href="{% url 'catalog:product_list' %}">Shop products</a></p>
+</section>
+
+{% if categories %}
+<section class="section">
+  <h2>Categories</h2>
+  <ul class="chip-list">
+    {% for category in categories %}
+      <li><a class="chip" href="{{ category.get_absolute_url }}">{{ category.name }}</a></li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+{% if featured %}
+<section class="section">
+  <h2>On the shelf</h2>
+  <div class="product-grid">
+    {% for product in featured %}
+      {% include "catalog/partials/product_card.html" %}
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}

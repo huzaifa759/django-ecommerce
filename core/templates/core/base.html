@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Corner Shop{% endblock %}</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'core/css/site.css' %}">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="logo" href="{% url 'core:home' %}">Corner Shop</a>
+      <nav class="nav">
+        <a href="{% url 'catalog:product_list' %}">Products</a>
+        <a href="{% url 'cart:detail' %}">
+          Cart{% if cart_item_count %} <span class="badge">{{ cart_item_count }}</span>{% endif %}
+        </a>
+        {% if user.is_authenticated %}
+          <a href="{% url 'orders:list' %}">Orders</a>
+          <a href="{% url 'users:account' %}">{{ user.username }}</a>
+          <form class="inline-form" method="post" action="{% url 'users:logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="linkish">Log out</button>
+          </form>
+        {% else %}
+          <a href="{% url 'users:login' %}">Log in</a>
+          <a class="btn btn-small" href="{% url 'users:register' %}">Register</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  {% if messages %}
+    <div class="wrap messages">
+      {% for message in messages %}
+        <p class="flash flash-{{ message.tags }}">{{ message }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <main class="wrap main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>Corner Shop — a small Django learning store.</p>
+    </div>
+  </footer>
+</body>
+</html>

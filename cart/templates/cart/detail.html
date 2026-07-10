@@ -1,0 +1,64 @@
+{% extends "core/base.html" %}
+
+{% block title %}Cart — Corner Shop{% endblock %}
+
+{% block content %}
+<h1>Your cart</h1>
+
+{% if cart %}
+  <div class="cart-panel">
+    <table class="cart-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Price</th>
+          <th>Qty</th>
+          <th>Total</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in cart %}
+          <tr>
+            <td>
+              <a href="{{ item.product.get_absolute_url }}">{{ item.product.name }}</a>
+            </td>
+            <td>${{ item.price }}</td>
+            <td>
+              <form class="qty-form" method="post" action="{% url 'cart:update' item.product.id %}">
+                {% csrf_token %}
+                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.stock }}">
+                <button class="btn btn-small btn-outline" type="submit">Update</button>
+              </form>
+            </td>
+            <td>${{ item.total_price }}</td>
+            <td>
+              <form method="post" action="{% url 'cart:remove' item.product.id %}">
+                {% csrf_token %}
+                <button class="linkish" type="submit">Remove</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p class="cart-total"><strong>Total: ${{ cart.get_total_price }}</strong></p>
+    {% if user.is_authenticated %}
+      <form method="post" action="{% url 'orders:confirm' %}">
+        {% csrf_token %}
+        <button class="btn" type="submit">Confirm order</button>
+      </form>
+      <p class="muted">No payment step — confirming creates your order and updates stock.</p>
+    {% else %}
+      <p class="muted">
+        <a href="{% url 'users:login' %}?next={% url 'cart:detail' %}">Log in</a>
+        to confirm your order.
+      </p>
+    {% endif %}
+    <p><a class="btn btn-outline" href="{% url 'catalog:product_list' %}">Keep shopping</a></p>
+  </div>
+{% else %}
+  <p class="empty">Your cart is empty.</p>
+  <p><a class="btn" href="{% url 'catalog:product_list' %}">Browse products</a></p>
+{% endif %}
+{% endblock %}

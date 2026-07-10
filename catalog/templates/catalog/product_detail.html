@@ -1,0 +1,55 @@
+{% extends "core/base.html" %}
+
+{% block title %}{{ product.name }} — Corner Shop{% endblock %}
+
+{% block content %}
+<article class="detail">
+  <div class="detail-media{% if not product.image %} placeholder{% endif %}">
+    {% if product.image %}
+      <img src="{{ product.image.url }}" alt="{{ product.name }}">
+    {% else %}
+      No photo yet
+    {% endif %}
+  </div>
+
+  <div class="detail-info">
+    <p class="meta">
+      <a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a>
+    </p>
+    <h1>{{ product.name }}</h1>
+    <p class="price">${{ product.price }}</p>
+    {% if product.in_stock %}
+      <p class="stock-ok">In stock ({{ product.stock }})</p>
+    {% else %}
+      <p class="stock-out">Out of stock</p>
+    {% endif %}
+    {% if product.description %}
+      <p>{{ product.description }}</p>
+    {% endif %}
+
+    {% if product.in_stock %}
+      <form method="post" action="{% url 'cart:add' product.id %}">
+        {% csrf_token %}
+        <div class="form-group" style="max-width: 8rem;">
+          <label for="id_quantity">Quantity</label>
+          <input id="id_quantity" type="number" name="quantity" value="1" min="1" max="{{ product.stock }}">
+        </div>
+        <button class="btn" type="submit">Add to cart</button>
+      </form>
+    {% else %}
+      <button class="btn" type="button" disabled>Out of stock</button>
+    {% endif %}
+  </div>
+</article>
+
+{% if related %}
+<section class="section">
+  <h2>More in {{ product.category.name }}</h2>
+  <div class="product-grid">
+    {% for product in related %}
+      {% include "catalog/partials/product_card.html" %}
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}

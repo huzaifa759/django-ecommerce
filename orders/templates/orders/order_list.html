@@ -1,0 +1,39 @@
+{% extends "core/base.html" %}
+
+{% block title %}Orders — Corner Shop{% endblock %}
+
+{% block content %}
+<h1>Your orders</h1>
+
+{% if orders %}
+  <div class="cart-panel">
+    <table class="cart-table">
+      <thead>
+        <tr>
+          <th>Order</th>
+          <th>Date</th>
+          <th>Status</th>
+          <th>Items</th>
+          <th>Total</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+          <tr>
+            <td>#{{ order.pk }}</td>
+            <td>{{ order.created_at|date:"M j, Y H:i" }}</td>
+            <td>{{ order.get_status_display }}</td>
+            <td>{{ order.items.all|length }}</td>
+            <td>${{ order.get_total }}</td>
+            <td><a href="{% url 'orders:detail' order.pk %}">View</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <p class="empty">You have no orders yet.</p>
+  <p><a class="btn" href="{% url 'catalog:product_list' %}">Browse products</a></p>
+{% endif %}
+{% endblock %}
